@@ -1,10 +1,20 @@
 body{
     background-color: #3285FF !important;
 }
+
 .container{
     background-color: #3285FF !important;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.question-footer{
+    display: flex;
+    justify-content: space-between;
+}
+
+.quiz-card{
+    width: 30rem;
 }
