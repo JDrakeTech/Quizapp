@@ -65,13 +65,22 @@ function init() {
 }
 
 function showQuestion() {
-    let question = questions[currentQuestion];
 
-    document.getElementById('questionText').innerHTML = question['question'];
-    document.getElementById('answer_1').innerHTML = question['answer_1'];
-    document.getElementById('answer_2').innerHTML = question['answer_2'];
-    document.getElementById('answer_3').innerHTML = question['answer_3'];
-    document.getElementById('answer_4').innerHTML = question['answer_4'];
+    if (currentQuestion >= questions.length) {
+        // ToDo : Show End Screen 
+        document.getElementById('endScreen').style = '';
+        document.getElementById('questionBody').style = 'display: none';
+    } else {
+
+        let question = questions[currentQuestion];
+
+        document.getElementById('currentQeustion').innerHTML = currentQuestion + 1;
+        document.getElementById('questionText').innerHTML = question['question'];
+        document.getElementById('answer_1').innerHTML = question['answer_1'];
+        document.getElementById('answer_2').innerHTML = question['answer_2'];
+        document.getElementById('answer_3').innerHTML = question['answer_3'];
+        document.getElementById('answer_4').innerHTML = question['answer_4'];
+    }
 }
 
 function answer(selection) {
@@ -99,10 +108,12 @@ function nextQuestion() {
     document.getElementById('next-button').disabled = true; // der butten wird wieder disabled
     resetAnswerButton(); // führt die function aus die die antworten resetet
     showQuestion(); // rendert die fragen neu auf der nächsten stelle im array da currentQuestion hoch gesetzt wird 
+
+
 }
 
 function resetAnswerButton() { // entfernt die css-klassen
-    document.getElementById('answer_1').parentNode.classList.remove('bg-danger'); 
+    document.getElementById('answer_1').parentNode.classList.remove('bg-danger');
     document.getElementById('answer_1').parentNode.classList.remove('bg-success');
     document.getElementById('answer_2').parentNode.classList.remove('bg-danger');
     document.getElementById('answer_2').parentNode.classList.remove('bg-success');
