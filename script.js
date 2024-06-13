@@ -1,86 +1,53 @@
-let questions = [
-    {
-        "question": "Wer hat HTML erfunden?",
-        "answer_1": "Robbie Williams",
-        "answer_2": "Lady Gaga",
-        "answer_3": "Tim Berners-Lee",
-        "answer_4": "Justin Bieber",
-        "right_answer": 3
-    },
-    {
-        "question": "Welches Tier ist bekannt dafür, das größte Säugetier der Welt zu sein?",
-        "answer_1": "Elefant",
-        "answer_2": "Blauwal",
-        "answer_3": "Giraffe",
-        "answer_4": "Nashorn",
-        "right_answer": 2
-    },
-    {
-        "question": "Wer malte die Mona Lisa?",
-        "answer_1": "Vincent van Gogh",
-        "answer_2": "Pablo Picasso",
-        "answer_3": "Leonardo da Vinci",
-        "answer_4": "Michelangelo",
-        "right_answer": 3
-    },
-    {
-        "question": "Welche Sprache hat die meisten Muttersprachler weltweit?",
-        "answer_1": "Englisch",
-        "answer_2": "Spanisch",
-        "answer_3": "Hindi",
-        "answer_4": "Mandarin",
-        "right_answer": 4
-    },
-    {
-        "question": "In welchem Jahr fand der Fall der Berliner Mauer statt?",
-        "answer_1": "1985",
-        "answer_2": "1989",
-        "answer_3": "1991",
-        "answer_4": "1993",
-        "right_answer": 2
-    },
-    {
-        "question": "Welcher Planet wird oft als der 'Rote Planet' bezeichnet?",
-        "answer_1": "Mars",
-        "answer_2": "Saturn",
-        "answer_3": "Venus",
-        "answer_4": "Neptun",
-        "right_answer": 1
-    },
-    {
-        "question": "Wie viele Kontinente gibt es auf der Erde?",
-        "answer_1": "5",
-        "answer_2": "6",
-        "answer_3": "7",
-        "answer_4": "8",
-        "right_answer": 3
-    }
-];
 
 let currentQuestion = 0;
+let rightAnswers = 0;
+let AUDIO_SUCCESS = new Audio('audio/correct.mp3');
+let AUDIO_FAIL = new Audio('audio/fail.mp3');
 
 function init() {
     document.getElementById('quizLength').innerHTML = questions.length;
+
     showQuestion()
 }
 
 function showQuestion() {
-
-    if (currentQuestion >= questions.length) {
-        // ToDo : Show End Screen 
-        document.getElementById('endScreen').style = '';
-        document.getElementById('questionBody').style = 'display: none';
-    } else {
-
-        let question = questions[currentQuestion];
-
-        document.getElementById('currentQeustion').innerHTML = currentQuestion + 1;
-        document.getElementById('questionText').innerHTML = question['question'];
-        document.getElementById('answer_1').innerHTML = question['answer_1'];
-        document.getElementById('answer_2').innerHTML = question['answer_2'];
-        document.getElementById('answer_3').innerHTML = question['answer_3'];
-        document.getElementById('answer_4').innerHTML = question['answer_4'];
+    if (gameIsOver()) {
+        showEndScreen();
+    } else { // Show question
+        updateToNextQuestion();
+        updateProgressBar();
     }
+}
+
+function gameIsOver() {
+    return currentQuestion >= questions.length;
+}
+
+function showEndScreen() {
+    document.getElementById('endScreen').style = '';
+    document.getElementById('questionBody').style = 'display: none';
+    document.getElementById('quizLengthEnd').innerHTML = questions.length;
+    document.getElementById('header-image').src = './img/trophy.png';
+}
+
+function updateProgressBar() {
+    let percent = (currentQuestion + 1) / questions.length;
+    percent = Math.round(percent * 100);
+
+    document.getElementById('progress-bar').innerHTML = `${percent}%`;
+    document.getElementById('progress-bar').style = `width: ${percent}%;`;
+    console.log('Fortschritt:', percent);
+}
+
+function updateToNextQuestion() {
+    let question = questions[currentQuestion];
+
+    document.getElementById('currentQeustion').innerHTML = currentQuestion + 1;
+    document.getElementById('questionText').innerHTML = question['question'];
+    document.getElementById('answer_1').innerHTML = question['answer_1'];
+    document.getElementById('answer_2').innerHTML = question['answer_2'];
+    document.getElementById('answer_3').innerHTML = question['answer_3'];
+    document.getElementById('answer_4').innerHTML = question['answer_4'];
 }
 
 function answer(selection) {
@@ -92,16 +59,33 @@ function answer(selection) {
     console.log('SelectionQuestionNumber is', selectionQuestionNumber);
     console.log('Current question is ', question['right_answer']);
 
-    if (selectionQuestionNumber == question['right_answer']) {
-        console.log('Richtige Antwort !!!')
-        document.getElementById(selection).parentNode.classList.add('bg-success');
+    if (rightAnswerSelected(selectionQuestionNumber, question)) {
+        rightAnswer(selection);
     } else {
-        console.log('Falsche Antwort !!!')
-        document.getElementById(selection).parentNode.classList.add('bg-danger');
-        document.getElementById(idOfRightAnswer).parentNode.classList.add('bg-success');
+        wrongAnswer(selection, idOfRightAnswer)
     }
     document.getElementById('next-button').disabled = false;
 }
+
+function rightAnswerSelected(selectionQuestionNumber, question) {
+    return selectionQuestionNumber == question['right_answer']
+}
+
+function rightAnswer(selection) {
+    console.log('Richtige Antwort !!!')
+    document.getElementById(selection).parentNode.classList.add('bg-success');
+    AUDIO_SUCCESS.play();
+    rightAnswers++
+    document.getElementById('rightAnswers').innerHTML = rightAnswers;
+}
+
+function wrongAnswer(selection, idOfRightAnswer) {
+    console.log('Falsche Antwort !!!')
+    document.getElementById(selection).parentNode.classList.add('bg-danger');
+    document.getElementById(idOfRightAnswer).parentNode.classList.add('bg-success');
+    AUDIO_FAIL.play();
+}
+ 
 
 function nextQuestion() {
     currentQuestion++ // z.B von von 0 auf 1
@@ -121,4 +105,13 @@ function resetAnswerButton() { // entfernt die css-klassen
     document.getElementById('answer_3').parentNode.classList.remove('bg-success');
     document.getElementById('answer_4').parentNode.classList.remove('bg-danger');
     document.getElementById('answer_4').parentNode.classList.remove('bg-success');
+}
+
+function restartGame() {
+    document.getElementById('header-image').src = './img/pencil.jpg';
+    document.getElementById('endScreen').style = 'display: none';
+    document.getElementById('questionBody').style = '';
+    currentQuestion = 0;
+    rightAnswers = 0;
+    init();
 }

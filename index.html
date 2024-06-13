@@ -7,6 +7,7 @@
     <title>Quizapp</title>
     <link rel="icon" type="image/x-icon" href="./img/logo.png">
     <link rel="stylesheet" href="styles.css">
+    <script src="questionsArray.js"></script>
     <script src="script.js"></script>
 
     <!--Bootstrap files-->
@@ -27,14 +28,28 @@
 
     <div class="container">
         <div class="card quiz-card">
-            <img src="./img/pencil.jpg" class="card-img-top">
+            <img src="./img/pencil.jpg" id="header-image" class="card-img-top">
+
+            <div class="progress" role="progressbar">
+                <div class="progress-bar" id="progress-bar" style="width: 0%">25%</div>
+            </div>
 
             <div class="card-body" id="endScreen" style="display: none;">
-                Quiz benndet!
+                <div class="text-center endscreen-headline">
+                    Quiz beendet!
+                </div>
+
+                <div class="text-center">
+                    Du hast <b id="rightAnswers">XXX</b> Fragen von <b id="quizLengthEnd">XXX</b> richtig beantwortet
+                </div>
+
+                <div class="button-row">
+                    <button onclick="restartGame()" class="btn btn-primary">Erneut spielen</button>
+                </div>
             </div>
 
 
-            <div class="card-body" id="questionBody" style="">
+            <div class="card-body" id="questionBody" >
                 <h5 class="card-title" id="questionText">Frage</h5>
 
                 <div class="card quiz-answer-card mb-2" onclick="answer('answer_1')">
@@ -66,7 +81,8 @@
                         <b id="currentQeustion">1</b> von <b id="quizLength">5</b> Fragen
                     </span>
 
-                    <button onclick="nextQuestion()" class="btn btn-primary" id="next-button" disabled>Nächste Frage</button>
+                    <button onclick="nextQuestion()" class="btn btn-primary" id="next-button" disabled>Nächste
+                        Frage</button>
                 </div>
 
             </div>
